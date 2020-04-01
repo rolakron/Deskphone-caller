@@ -1,0 +1,26 @@
+#!/bin/bash
+if [ -z "$1" -o "$1" = bash ]; then
+        echo Please enter a number to dial:
+        read number
+else
+        number=$1
+fi
+var=0
+if [[ $number = tel:* ]]; then
+        number=${number#"tel:"}
+        if ! [[ $number = +* ]]; then
+
+                number=0$number
+        fi
+fi
+if ! [[ -z $number ]]; then
+      echo "Dialing" $number
+	curl --get \
+            --data-urlencode "ip=172.31.1.223" \
+            --data-urlencode "number=$number" \
+            http://172.31.1.30/cisco/dial.php
+            exit 0
+else
+echo No number entered, exiting.
+fi
+exit -1
