@@ -1,24 +1,25 @@
 #!/bin/bash
+#Change the script according to your needs. Here we assume that numbers expressed in an
+#international format (+358....) can be dialed without further changes.
 if [ -z "$1" -o "$1" = bash ]; then
-        echo Please enter a number to dial:
-        read number
+        echo Please enter a number to dial:	#Asking for a number to dial.
+        read number			
 else
-        number=$1
+        number=$1			#Otherwise read it as an argument.
 fi
-var=0
-if [[ $number = tel:* ]]; then
+if [[ $number = tel:* ]]; then		#Checking if the string contains tel: and removes it. If not, we assume the number is entered in the terminal and proceed to dial it as is.
         number=${number#"tel:"}
-        if ! [[ $number = +* ]]; then
+        if ! [[ $number = +* ]]; then	#If the number starts with a +, then we assume that the number can be dialed as it is. Otherwise we might have to add the prefix for an external line.
 
-                number=0$number
+                number=0$number		#Adding the prefix for external line, in this case, we add 0 in the front of the number. Change this according to your needs.
         fi
 fi
-if ! [[ -z $number ]]; then
+if ! [[ -z $number ]]; then		#Dialing the number, if not empty. Otherwise we exit the script.
       echo "Dialing" $number
 	curl --get \
-            --data-urlencode "ip=172.31.1.223" \
+            --data-urlencode "ip=10.0.0.223" \  #The IP-address of the phone
             --data-urlencode "number=$number" \
-            http://172.31.1.30/cisco/dial.php
+            http://www.example.com/cisco/dial.php   #The address to the HTTP-server holding the dial.php.
             exit 0
 else
 echo No number entered, exiting.
