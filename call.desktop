@@ -1,0 +1,7 @@
+#!/usr/bin/env xdg-open 
+[Desktop Entry]
+Name=Deskphone caller
+Icon=/usr/share/pixmaps/deskphone.png
+Exec=bash -c "/usr/local/bin/call %u"
+Terminal=false
+Type=Application
