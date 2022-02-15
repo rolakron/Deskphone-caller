@@ -3,10 +3,12 @@
 #international format (+358....) can be dialed without further changes.
 if [ -z "$1" -o "$1" = bash ]; then
         echo Please enter a number to dial:	#Asking for a number to dial.
-        read number			
+        read input			
 else
-        number=$1			#Otherwise read it as an argument.
+        input=$1			#Otherwise read it as an argument.
 fi
+number=$(echo $input | sed 's/\%20//g;s/'\(0\)'//g') #Removing some garbage in the number, like (0) and %20 that comes from spaces in the phone number in the URI.
+
 if [[ $number = tel:* ]]; then		#Checking if the string contains tel: and removes it. If not, we assume the number is entered in the terminal and proceed to dial it as is.
         number=${number#"tel:"}
         if ! [[ $number = +* ]]; then	#If the number starts with a +, then we assume that the number can be dialed as it is. Otherwise we might have to add the prefix for an external line.
@@ -15,12 +17,17 @@ if [[ $number = tel:* ]]; then		#Checking if the string contains tel: and remove
         fi
 fi
 if ! [[ -z $number ]]; then		#Dialing the number, if not empty. Otherwise we exit the script.
-      echo "Dialing" $number
-	curl --get \
-            --data-urlencode "ip=10.0.0.223" \  #The IP-address of the phone
-            --data-urlencode "number=$number" \
-            http://www.example.com/cisco/dial.php   #The address to the HTTP-server holding the dial.php.
-            exit 0
+   if [[ $number = hangup || $number = redial ]]	#Determing if a command (redial or hangup) is entered. These command can be changed according to your needs. Please remember to update dial.php accordingly.
+     then
+	echo "Trying to" $number
+     else       
+      echo "Trying to dial" $number
+     fi
+	curl -s --get \
+		--data-urlencode "ip=10.0.0.223" \  #The IP-address of the phone
+		--data-urlencode "number=$number" \
+		http://www.example.com/cisco/dial.php   #The address to the HTTP-server holding the dial.php.
+		exit 0
 else
 echo No number entered, exiting.
 fi
