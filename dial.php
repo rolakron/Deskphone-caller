@@ -39,7 +39,7 @@ if (in_array(htmlspecialchars($_GET["number"]),$array)) {
 
 $ip = htmlspecialchars($_GET["ip"]);
 
-if ($number == "redial") {$uri = "Key:Soft1";} //Change these two lines according to your configuration or needs. You might have something else on these buttons.
+if ($number == "redial") {$uri = "Key:Soft1";} //Change these two lines according to your configuration or needs. You might have something else configured on the keys Soft1 and Soft2.
 else if ($number == "hangup") {$uri = "Key:Soft2";} 
 	else {$uri = "Dial:" . $number;}
 $uid = "cisco";
